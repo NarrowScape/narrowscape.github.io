@@ -14,10 +14,10 @@
 <link rel="stylesheet" href="static/css/bulma.min.css">
 <link rel="stylesheet" href="static/css/index.css">
 <link rel="stylesheet" href="static/css/fontawesome.all.min.css">
-<link rel="stylesheet" href="static/css/site.css?v=202610312111">
+<link rel="stylesheet" href="static/css/site.css?v=202610312142">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script defer src="static/js/fontawesome.all.min.js"></script>
-<script src="static/js/site.js?v=202610312111"></script>
+<script src="static/js/site.js?v=202610312142"></script>
 </head>
 <body>
 <main id="main-content">
@@ -33,7 +33,7 @@
 <div class="publication-links" style="margin-top:1.2rem">
 <span class="link-block"><a href="#benchmark" class="external-link button is-normal is-rounded is-dark"><span class="icon"><i class="fas fa-chart-bar"></i></span><span>LLM benchmark</span></a></span>
 <span class="link-block"><a href="#replays" class="external-link button is-normal is-rounded is-dark"><span class="icon"><i class="fas fa-film"></i></span><span>Replays</span></a></span>
-<span class="link-block"><a href="#baseline" class="external-link button is-normal is-rounded is-dark"><span class="icon"><i class="fas fa-balance-scale"></i></span><span>Baseline benchmark</span></a></span>
+<span class="link-block"><a href="#baseline" class="external-link button is-normal is-rounded is-dark"><span class="icon"><i class="fas fa-balance-scale"></i></span><span>Method comparison</span></a></span>
 <span class="link-block"><button class="external-link button is-normal is-rounded is-dark" disabled aria-label="Paper coming soon"><span class="icon"><i class="fas fa-file-pdf"></i></span><span>Paper · coming soon</span></button></span>
 <span class="link-block"><button class="external-link button is-normal is-rounded is-dark" disabled aria-label="Scenario-generation code coming soon"><span class="icon"><i class="fas fa-code"></i></span><span>Code · coming soon</span></button></span>
 </div>
@@ -181,7 +181,7 @@
   &quot;focus&quot;: &quot;An older pedestrian, walking away from the ego&#x27;s direction of travel along the carriageway edge due to a blocked footway, suddenly steps further into the ego&#x27;s lane. The ego is travelling at 30-40 km/h on the narrow KC-C corridor.&quot;
 }</pre></details></div></div></div></div></section>
 
-<section class="section" id="baseline"><div class="container is-max-desktop"><h2 class="title is-3">Baseline performance benchmark</h2><div class="content">
+<section class="section" id="baseline"><div class="container is-max-desktop"><h2 class="title is-3">Comparison with related methods</h2><div class="content">
 <div class="table-wrap"><table class="data cmp"><thead><tr><th></th><th>ChatScene (CVPR 2024)</th><th>ScenGE (AAAI 2026)</th><th>TTSG (WAD at CVPR 2026)</th><th>LCTGen (CoRL 2023)</th><th>This work</th></tr></thead><tbody>
 <tr><td>Input</td><td>text; LLM decomposes, retrieves Scenic snippets</td><td>LLM + retrieval writes Scenic; adversarial selection</td><td>text; prompt analysis, road retrieval, agent planning, plan-aware road ranking</td><td>text to a structured layout</td><td>request at any level of detail + the road's geometry + the local crash mix</td></tr>
 <tr><td>Maps</td><td>CARLA towns</td><td>CARLA towns (SafeBench)</td><td>CARLA towns (road graph)</td><td>Waymo map crops</td><td>any OpenStreetMap area or surveyed map, via SUMO and OpenDRIVE, to CARLA and 51Sim</td></tr>
@@ -192,8 +192,6 @@
 <tr><td>Checked before use</td><td>compiles</td><td>compiles</td><td>structure and feasibility</td><td>-</td><td>simulated to its target class; replays re-simulate to their outcome</td></tr>
 <tr><td>Evaluation of an ADS</td><td>RL ego in SafeBench (collision rate)</td><td>RL egos</td><td>SafeBench collision rate; captioning model trained on scenes</td><td>open loop</td><td>closed loop with any CARLA agent; avoidable planner failures; delay imposed on traffic</td></tr>
 </tbody></table></div>
-<p>ChatScene run on the same requests, LLM, maps and closed loop:</p>
-<div class='table-wrap'><table class='data base'><thead><tr><th>Generator</th><th>Program compiles</th><th>Scene placed on the map</th><th>Plays in CARLA</th><th>Critical for the human-like driver</th><th>Avoidable planner failures</th><th>JSD to the KSI mix</th></tr></thead><tbody><tr><td>ChatScene, LLM writes the snippets</td><td>23% <span class='ci'>[17, 30]</span></td><td>20% <span class='ci'>[14, 27]</span></td><td>14% <span class='ci'>[9, 20]</span></td><td>9% <span class='ci'>[5, 14]</span></td><td>1% <span class='ci'>[0, 2]</span></td><td>0.27</td></tr><tr><td>ChatScene, retrieval</td><td>54% <span class='ci'>[45, 63]</span></td><td>39% <span class='ci'>[31, 47]</span></td><td>27% <span class='ci'>[20, 35]</span></td><td>16% <span class='ci'>[11, 22]</span></td><td>1% <span class='ci'>[0, 2]</span></td><td>0.27</td></tr><tr><td>ChatScene, retrieval, oncoming lanes linked</td><td>94% <span class='ci'>[91, 97]</span></td><td>64% <span class='ci'>[57, 71]</span></td><td>39% <span class='ci'>[32, 47]</span></td><td>25% <span class='ci'>[19, 31]</span></td><td>2% <span class='ci'>[1, 4]</span></td><td>0.27</td></tr><tr class='ours'><td>Ours</td><td>-</td><td>99% <span class='ci'>[98, 100]</span></td><td>99% <span class='ci'>[98, 100]</span></td><td>64% <span class='ci'>[54, 73]</span></td><td>16% <span class='ci'>[10, 22]</span></td><td>0.22</td></tr></tbody></table></div><p class='table-note'>GPT-5 mini for both, 270 cases asked of each; per case asked, 95% intervals over request-map-seed units. Avoidable planner failure: BehaviorAgent at fault where the cautious IDM has no collision.</p>
 </div></div></section>
 
 <section class="section hero is-light" id="review"><div class="container is-max-desktop"><h2 class="title is-3">Case review: the 148-case trial set</h2><div class="content">
