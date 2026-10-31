@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 from html.parser import HTMLParser
 import json
 from pathlib import Path
@@ -12,6 +13,16 @@ from urllib.parse import urlsplit, unquote
 
 ROOT = Path(__file__).resolve().parents[1]
 BLOCKED = {".mp4", ".mov", ".webm", ".avi", ".csv", ".pkl", ".npy", ".npz", ".zip", ".xosc", ".xml", ".log"}
+REMOVED_FIGURES = {"flow_anatomy", "flow_bottleneck"}
+REMOVED_PREVIEWS = {
+    "local-concerns-gpt.gif", "local-concerns-qwen7b.gif", "local-concerns-deepseek.gif",
+    "everyday-hazards-gpt.gif", "cl-kc2-sim-ads.gif", "cl-kc2-behavior.gif",
+    "wx-clear.gif", "wx-rain.gif", "wx-fog.gif", "wx-night.gif",
+}
+WEATHER_PREVIEWS = {
+    "wx-bus-clear.gif", "wx-turnback-rain.gif", "wx-motorcycle-fog.gif",
+    "wx-occludedped-night.gif",
+}
 
 
 class Page(HTMLParser):
@@ -19,8 +30,21 @@ class Page(HTMLParser):
         super().__init__()
         self.links, self.ids = [], set()
         self.images = 0
+        self.image_sources, self.resource_buttons = [], []
+        self._resource = None
+        self._publication_depth = 0
     def handle_starttag(self, tag, attrs):
         a = dict(attrs)
+        classes = set(a.get("class", "").split())
+        assert not {"clip", "missing"}.issubset(classes), "Missing clip placeholder in page"
+        if tag == "div":
+            if self._publication_depth:
+                self._publication_depth += 1
+            elif "publication-links" in classes:
+                self._publication_depth = 1
+        if self._publication_depth and tag in {"a", "button"}:
+            assert self._resource is None, "Nested resource controls"
+            self._resource = {"tag": tag, "attrs": a, "text": []}
         if "id" in a:
             assert a["id"] not in self.ids, f"Duplicate element ID: {a['id']}"
             self.ids.add(a["id"])
@@ -30,7 +54,43 @@ class Page(HTMLParser):
         if tag == "img":
             assert "alt" in a, "Image is missing alternative text"
             self.images += 1
+            if a.get("src"):
+                self.image_sources.append(a["src"])
         assert tag not in {"video", "source"}, "Only GIF previews may be published"
+    def handle_data(self, data):
+        if self._resource is not None:
+            self._resource["text"].append(data)
+    def handle_endtag(self, tag):
+        if self._resource is not None and tag == self._resource["tag"]:
+            self._resource["text"] = " ".join("".join(self._resource["text"]).split())
+            self.resource_buttons.append(self._resource)
+            self._resource = None
+        if tag == "div" and self._publication_depth:
+            self._publication_depth -= 1
+
+
+def check_resource_buttons(buttons):
+    assert len(buttons) == 5, "Expected five publication resource buttons"
+    by_label = {re.sub(r"\W+", " ", b["text"].casefold()).strip(): b for b in buttons}
+    expected = {"llm benchmark", "replays", "method comparison", "paper coming soon", "code coming soon"}
+    assert set(by_label) == expected, "Publication resource button labels changed or are duplicated"
+    for label, href in (("llm benchmark", "#benchmark"), ("replays", "#replays"),
+                        ("method comparison", "#baseline")):
+        b = by_label[label]
+        assert b["tag"] == "a" and b["attrs"].get("href") == href, f"Incorrect resource link: {label}"
+        assert "disabled" not in b["attrs"], f"Active resource link is disabled: {label}"
+    for label in ("paper coming soon", "code coming soon"):
+        b = by_label[label]
+        assert b["tag"] == "button" and "disabled" in b["attrs"], f"Unavailable resource must be disabled: {label}"
+        assert not b["attrs"].get("href"), f"Unavailable resource has a download link: {label}"
+        accessible = b["attrs"].get("aria-label", "").casefold()
+        assert "coming soon" in accessible and label.split()[0] in accessible, f"Unclear unavailable resource: {label}"
+
+
+def check_public_file(path):
+    assert path.suffix.lower() not in BLOCKED, f"Original replay/video in public tree: {path.name}"
+    assert path.stem.casefold() not in REMOVED_FIGURES, f"Removed traffic figure remains public: {path.name}"
+    assert path.name.casefold() not in REMOVED_PREVIEWS, f"Removed legacy preview remains public: {path.name}"
 
 
 def validate():
@@ -40,6 +100,7 @@ def validate():
         assert not re.search(pattern, page, re.I), f"Unwanted public content: {pattern}"
     p = Page()
     p.feed(page)
+    check_resource_buttons(p.resource_buttons)
     for link in p.links:
         u = urlsplit(link)
         if u.scheme or u.netloc:
@@ -50,9 +111,14 @@ def validate():
             assert target.is_file(), f"Missing local asset: {link}"
         elif u.fragment:
             assert u.fragment in p.ids, f"Broken section link: {link}"
+    weather = {Path(unquote(urlsplit(src).path)).name for src in p.image_sources
+               if Path(unquote(urlsplit(src).path)).name.startswith("wx-")}
+    assert weather == WEATHER_PREVIEWS, f"Expected four distinct weather previews; found: {sorted(weather)}"
+    weather_files = [ROOT / "static" / "media" / name for name in sorted(WEATHER_PREVIEWS)]
+    assert len({hashlib.sha256(f.read_bytes()).digest() for f in weather_files}) == 4, "Weather previews repeat the same asset"
     files = [ROOT / "index.html", *[f for f in (ROOT / "static").rglob("*") if f.is_file()]]
     for f in files:
-        assert f.suffix.lower() not in BLOCKED, f"Original replay/video in public tree: {f.name}"
+        check_public_file(f)
         if f.suffix.lower() in {".json", ".js", ".html", ".css"}:
             s = f.read_text(encoding="utf-8")
             assert not re.search(r"sk-or-v1-|gh[pousr]_[A-Za-z0-9]{20}", s), "Credential-like content in site"
@@ -77,7 +143,7 @@ def main():
         shutil.copytree(ROOT / "static", dest / "static", dirs_exist_ok=True)
         for f in dest.rglob("*"):
             if f.is_file():
-                assert f.suffix.lower() not in BLOCKED, "Unsafe cached build artifact"
+                check_public_file(f)
         print("Public site assembled.")
 
 
