@@ -1,0 +1,46 @@
+name: Validate and publish project website
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: project-pages
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Check public assets and build website
+        run: python scripts/validate_site.py --build-dir .build
+      - name: Save reviewable build
+        uses: actions/upload-artifact@v4
+        with:
+          name: iv2027-website
+          path: .build/
+          include-hidden-files: true
+          retention-days: 7
+      - name: Package project-only GitHub Pages site
+        if: github.event.repository.name == format('{0}.github.io', github.repository_owner)
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .build/
+  deploy:
+    if: github.event.repository.name == format('{0}.github.io', github.repository_owner)
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Publish
+        id: deployment
+        uses: actions/deploy-pages@v4

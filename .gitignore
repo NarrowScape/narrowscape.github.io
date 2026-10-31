@@ -1,0 +1,10 @@
+*.mp4
+*.webm
+*.mov
+*.csv
+*.zip
+*.npy
+*.pkl
+.env*
+__pycache__/
+.build/
