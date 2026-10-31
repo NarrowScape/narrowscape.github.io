@@ -4,6 +4,8 @@ body{background:#fff}
 .content table.data{font-size:.86rem;border-collapse:collapse;width:100%}
 .content table.data th{background:#111827;color:#fff;font-weight:600;vertical-align:bottom;padding:.45em .5em;border:none}
 .content table.data td{padding:.4em .5em;border-bottom:1px solid var(--line);vertical-align:top}
+.content table.data tbody th{background:#fff;color:#1f2937;font-weight:600;border-bottom:1px solid var(--line);vertical-align:top}
+.content table.data thead .ci{color:#d1d5db}
 .content table.data tr.ref td{background:#fef9c3;font-style:italic}
 .content table.data tr.ours td{background:#e0f2fe;font-weight:600}
 .table-wrap{overflow-x:auto;margin:1rem 0}
@@ -19,7 +21,7 @@ body{background:#fff}
 .content figure.clip,figure.clip{margin:0;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fff;display:flex;flex-direction:column}
 .clip img{width:100%;display:block;aspect-ratio:720/316;object-fit:contain;background:#0f172a}
 .clip.reference img{aspect-ratio:720/440}
-.content figure.clip .clip-cap,.clip-cap{background:#fff;font-size:.82rem;line-height:1.4;padding:.85rem;color:#374151;height:11.5rem;text-align:left;display:flex;flex-direction:column;gap:.35rem;overflow:auto}
+.content figure.clip .clip-cap,.clip-cap{background:#fff;font-size:.82rem;font-style:normal;line-height:1.4;padding:.85rem;color:#374151;height:11.5rem;text-align:left;display:flex;flex-direction:column;gap:.35rem;overflow:auto}
 .clip-cap b{font-size:.92rem;line-height:1.35;min-height:2.5rem;color:#111827}
 .clip-meta{font-size:.74rem;color:var(--muted)}
 .clip-note{background:#fff;font-size:.78rem;padding:0 .6rem .5rem;color:var(--muted)}
