@@ -1,6 +1,6 @@
-# IV2027
+# NarrowScape
 
-Project website prepared for https://iv2027.github.io/.
+Project website prepared for https://narrowscape.github.io/.
 
 This repository contains the presentation website only. Scenario-generation code is coming soon. Only compact GIF previews and summary results are distributed; original videos, simulation traces, recorded replay trajectories, credentials and local run logs are excluded. Public GIFs can still be saved by a browser.
 
