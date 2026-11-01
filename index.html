@@ -14,10 +14,10 @@
 <link rel="stylesheet" href="static/css/bulma.min.css">
 <link rel="stylesheet" href="static/css/index.css">
 <link rel="stylesheet" href="static/css/fontawesome.all.min.css">
-<link rel="stylesheet" href="static/css/site.css?v=202611010935">
+<link rel="stylesheet" href="static/css/site.css?v=202611011036">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script defer src="static/js/fontawesome.all.min.js"></script>
-<script src="static/js/site.js?v=202611010935"></script>
+<script src="static/js/site.js?v=202611011036"></script>
 </head>
 <body>
 <main id="main-content">
@@ -50,6 +50,18 @@
 <section class="hero teaser"><div class="container is-max-desktop"><div class="hero-body">
 <div class="grid2"><figure class='clip'><img src='static/media/cl-bus-behavior.gif' loading='lazy' decoding='async' draggable='false' alt='GPT-5 mini (OpenAI) | Sai Kung | oncoming bus cuts the blind bend'><figcaption class='clip-cap'><b>Oncoming bus cuts the blind bend</b><span class='clip-meta'>GPT-5 mini (OpenAI) · Sai Kung</span><span>closed loop in CARLA: CARLA BehaviorAgent drives the ego: collision (at fault)</span></figcaption></figure><figure class='clip'><img src='static/media/kerbside-loading-human.gif' loading='lazy' decoding='async' draggable='false' alt='Narrow passage | Sai Kung | a van loading at the kerb'><figcaption class='clip-cap'><b>A van loading at the kerb</b><span class='clip-meta'>Narrow passage · Sai Kung</span><span>closed loop in CARLA: human-like reference driver waits, then passes (played at 2x)</span></figcaption></figure></div>
 <h2 class="subtitle has-text-centered" style="margin-top:1rem">Generated cases on three Hong Kong maps, played in CARLA with a driving policy in the loop (chase and front cameras, LiDAR from above, the ego's signals and safety measures).</h2>
+</div></div></section>
+
+<section class="section hero is-light" id="review"><div class="container is-max-desktop"><h2 class="title is-3">Case review: the 148-case trial set</h2><div class="content">
+<p>Click a case for its picture, outcome and description; scroll to zoom, drag to move.</p>
+<div class="rv">
+<div class="rv-bar"><div><label>Map <select id="rv-mapsel"><option value="Sai_Kung">Sai Kung</option><option value="Tuen_Mun">Tuen Mun</option><option value="HKPC">HKPC</option></select></label>
+&nbsp; <label>Colour by <select id="rv-colour"><option value="outcome">human-like driver's outcome</option><option value="ads">cautious ADS's outcome</option><option value="family">scenario family</option></select></label></div>
+<button class="button is-small" id="rv-fit">fit map</button></div>
+<div class="rv-main"><svg id="rv-map" role="img" aria-label="cases on the map"><g id="rv-roads"></g><g id="rv-paths"></g><g id="rv-marks"></g></svg>
+<div class="rv-card" id="rv-card"><p>Loading the cases ...</p></div></div>
+<div class="rv-legend" id="rv-legend"></div>
+<div class="rv-matrix" id="rv-matrix"></div></div>
 </div></div></section>
 
 <section class="section" id="pipeline"><div class="container is-max-desktop"><h2 class="title is-3">From OpenStreetMap to a CARLA or 51Sim replay</h2><div class="content">
@@ -202,18 +214,6 @@
 <tr><td>Checked before use</td><td>compiles</td><td>compiles</td><td>structure and feasibility</td><td>-</td><td>simulated to its target class; replays re-simulate to their outcome</td></tr>
 <tr><td>Evaluation of an ADS</td><td>RL ego in SafeBench (collision rate)</td><td>RL egos</td><td>SafeBench collision rate; captioning model trained on scenes</td><td>open loop</td><td>closed loop with any CARLA agent; avoidable planner failures; delay imposed on traffic</td></tr>
 </tbody></table></div>
-</div></div></section>
-
-<section class="section hero is-light" id="review"><div class="container is-max-desktop"><h2 class="title is-3">Case review: the 148-case trial set</h2><div class="content">
-<p>Click a case for its picture, outcome and description; scroll to zoom, drag to move.</p>
-<div class="rv">
-<div class="rv-bar"><div><label>Map <select id="rv-mapsel"><option value="Sai_Kung">Sai Kung</option><option value="Tuen_Mun">Tuen Mun</option><option value="HKPC">HKPC</option></select></label>
-&nbsp; <label>Colour by <select id="rv-colour"><option value="outcome">human-like driver's outcome</option><option value="ads">cautious ADS's outcome</option><option value="family">scenario family</option></select></label></div>
-<button class="button is-small" id="rv-fit">fit map</button></div>
-<div class="rv-main"><svg id="rv-map" role="img" aria-label="cases on the map"><g id="rv-roads"></g><g id="rv-paths"></g><g id="rv-marks"></g></svg>
-<div class="rv-card" id="rv-card"><p>Loading the cases ...</p></div></div>
-<div class="rv-legend" id="rv-legend"></div>
-<div class="rv-matrix" id="rv-matrix"></div></div>
 </div></div></section>
 
 <section class="section" id="generalization"><div class="container is-max-desktop"><h2 class="title is-3">Discussions on generalizations</h2><div class="content">
