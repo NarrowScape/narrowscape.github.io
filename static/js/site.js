@@ -1,4 +1,24 @@
 
+// Discourage casual media saving while keeping navigation and case-map controls usable.
+(function(){
+  var media = '.clip img,.fig img,.rv-card img,.pipeline,#rv-map';
+  function protectedMedia(node){
+    if (!node) return false;
+    var element = node.nodeType===1 ? node : node.parentElement;
+    return !!(element && element.closest && element.closest(media));
+  }
+  ['contextmenu','dragstart'].forEach(function(type){
+    document.addEventListener(type, function(ev){
+      if (protectedMedia(ev.target)) ev.preventDefault();
+    }, true);
+  });
+  document.addEventListener('copy', function(ev){
+    var selection = window.getSelection();
+    if (protectedMedia(ev.target) || protectedMedia(document.activeElement) ||
+        (selection && (protectedMedia(selection.anchorNode) || protectedMedia(selection.focusNode))))
+      ev.preventDefault();
+  }, true);
+})();
 function tabs(group, id){document.querySelectorAll('[data-group="'+group+'"]').forEach(function(e){var on=e.dataset.id===id;e.classList.toggle('on',on);if(e.tagName==='BUTTON')e.setAttribute('aria-pressed',String(on));});}
 (function(){
   var OUT = {'collision':'#d03b3b','near-collision':'#ec835a','normal':'#0ca30c'};
@@ -34,7 +54,7 @@ function tabs(group, id){document.querySelectorAll('[data-group="'+group+'"]').f
     var c = D.cases.find(function(x){return x.no===st.pick;});
     if (!c){ el('rv-card').innerHTML = '<p>Click a case on the map, or a count in the table below.</p><p class="ci">'+D.cases.length+' cases of the earlier trial set on the three surveyed maps (Sai Kung, Tuen Mun, HKPC): six scenario families, each case placed where its critical moment happens.</p>'; return; }
     var num = function(v, u){return (v===null||v===undefined||v==='None') ? '-' : (Math.round(v*100)/100)+(u||'');};
-    el('rv-card').innerHTML = (c.thumb ? '<img src="'+c.thumb+'" alt="">' : '') +
+    el('rv-card').innerHTML = (c.thumb ? '<img src="'+c.thumb+'" alt="" draggable="false">' : '') +
       '<h4>'+e(c.no+' | '+c.title)+'</h4><div><span class="pill">'+e(famName(c.family))+'</span><span class="pill">'+e(MAPN[c.map]+' '+c.corridor)+'</span></div>' +
       '<dl><dt>Human-like driver</dt><dd><span class="oc '+c.outcome+'">'+e(c.outcome)+'</span></dd>' +
       '<dt>Cautious ADS</dt><dd><span class="oc '+c.ads+'">'+e(c.ads)+'</span></dd>' +

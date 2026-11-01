@@ -73,6 +73,7 @@ body{background:#fff}
 .hero>.container,.section>.container,.hero .content,.section .content{min-width:0;max-width:100%}
 .hero{overflow-x:hidden}
 img{max-width:100%;height:auto}
+.clip img,.fig img,.rv-card img,.pipeline,#rv-map{-webkit-user-select:none;user-select:none;-webkit-user-drag:none;-webkit-touch-callout:none}
 @media (max-width:600px){.publication-title{font-size:1.8rem!important}}
 /* case review */
 .rv{border:1px solid var(--line);border-radius:12px;padding:.8rem;background:#fafaf9}
