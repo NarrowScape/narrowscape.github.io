@@ -20,8 +20,8 @@ REMOVED_PREVIEWS = {
     "wx-clear.gif", "wx-rain.gif", "wx-fog.gif", "wx-night.gif",
 }
 WEATHER_PREVIEWS = {
-    "wx-bus-clear.gif", "wx-turnback-rain.gif", "wx-motorcycle-fog.gif",
-    "wx-occludedped-night.gif",
+    "wx-bus-clear.webp", "wx-turnback-rain.webp", "wx-motorcycle-fog.webp",
+    "wx-occludedped-night.webp",
 }
 
 
@@ -56,7 +56,7 @@ class Page(HTMLParser):
             self.images += 1
             if a.get("src"):
                 self.image_sources.append(a["src"])
-        assert tag not in {"video", "source"}, "Only GIF previews may be published"
+        assert tag not in {"video", "source"}, "Only animated image previews may be published"
     def handle_data(self, data):
         if self._resource is not None:
             self._resource["text"].append(data)
