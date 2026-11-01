@@ -93,6 +93,24 @@ def check_public_file(path):
     assert path.name.casefold() not in REMOVED_PREVIEWS, f"Removed legacy preview remains public: {path.name}"
 
 
+def check_native_preview(path):
+    """Read the WebP container directly, keeping CI independent of image packages."""
+    data = path.read_bytes()
+    assert data[:4] == b"RIFF" and data[8:12] == b"WEBP", f"Invalid preview: {path.name}"
+    offset, canvas, frames = 12, None, 0
+    while offset + 8 <= len(data):
+        tag, size = data[offset:offset+4], int.from_bytes(data[offset+4:offset+8], "little")
+        payload = data[offset+8:offset+8+size]
+        if tag == b"VP8X":
+            canvas = (1 + int.from_bytes(payload[4:7], "little"),
+                      1 + int.from_bytes(payload[7:10], "little"))
+        elif tag == b"ANMF":
+            frames += 1
+        offset += 8 + size + (size % 2)
+    assert canvas == (1280, 720), f"Preview resolution changed: {path.name}: {canvas}"
+    assert frames > 1, f"Replay is not animated: {path.name}"
+
+
 def validate():
     page = (ROOT / "index.html").read_text(encoding="utf-8")
     assert "{{" not in page, "Unresolved build placeholder"
@@ -119,6 +137,8 @@ def validate():
     files = [ROOT / "index.html", *[f for f in (ROOT / "static").rglob("*") if f.is_file()]]
     for f in files:
         check_public_file(f)
+        if f.parent == ROOT / "static" / "media" and f.suffix.lower() == ".webp":
+            check_native_preview(f)
         if f.suffix.lower() in {".json", ".js", ".html", ".css"}:
             s = f.read_text(encoding="utf-8")
             assert not re.search(r"sk-or-v1-|gh[pousr]_[A-Za-z0-9]{20}", s), "Credential-like content in site"
@@ -137,6 +157,11 @@ def main():
     if args.build_dir:
         dest = (ROOT / args.build_dir).resolve()
         assert dest.is_relative_to(ROOT) and dest != ROOT, "Build must stay inside the site checkout"
+        # This generated directory is reconstructed from validated sources.
+        # A clean assembly prevents retired media from surviving an incremental copy.
+        assert dest == ROOT / ".build", "Use the dedicated .build artifact directory"
+        if dest.exists():
+            shutil.rmtree(dest)
         dest.mkdir(parents=True, exist_ok=True)
         for name in ("index.html", ".nojekyll", "MEDIA_NOTICE.md"):
             shutil.copy2(ROOT / name, dest / name)
