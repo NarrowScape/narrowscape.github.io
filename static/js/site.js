@@ -83,7 +83,6 @@ function tabs(group, id){document.querySelectorAll('[data-group="'+group+'"]').f
     }).catch(function(){ el('rv-card').innerHTML = '<p>The case data could not be loaded.</p>'; });
   }
   document.addEventListener('DOMContentLoaded', function(){
-    if (!el('rv-map')) return;
-    if ('IntersectionObserver' in window){ var io = new IntersectionObserver(function(es){ if (es[0].isIntersecting){ io.disconnect(); init(); } }, {rootMargin:'400px'}); io.observe(el('rv-map')); } else init();
+    if (el('rv-map')) init();
   });
 })();
