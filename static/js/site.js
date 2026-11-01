@@ -106,3 +106,24 @@ function tabs(group, id){document.querySelectorAll('[data-group="'+group+'"]').f
     if (el('rv-map')) init();
   });
 })();
+
+// Decode the animated previews that are in view; retain full-resolution posters
+// elsewhere in the gallery. This affects playback resources, never frame data.
+(function(){
+  if (!('IntersectionObserver' in window)) return;
+  function initializePreviews(){
+  var observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      var img=entry.target;
+      var next=entry.isIntersecting ? img.dataset.animatedPreview : img.dataset.previewPoster;
+      if (img.getAttribute('src')!==next) img.setAttribute('src',next);
+    });
+  },{rootMargin:'100px 0px',threshold:0.01});
+  document.querySelectorAll('img[data-preview-poster]').forEach(function(img){
+    img.dataset.animatedPreview=img.getAttribute('src');
+    observer.observe(img);
+  });
+  }
+  if (document.readyState==='loading') document.addEventListener('DOMContentLoaded',initializePreviews);
+  else initializePreviews();
+})();
