@@ -12,6 +12,11 @@ body{background:#fff}
 .table-note{font-size:.8rem;color:var(--muted);margin-top:-.4rem}
 .ci{color:var(--muted);font-size:.78em;white-space:nowrap}
 .stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.8rem;margin:1.4rem auto 0;max-width:760px}
+.contributions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem;margin:1.2rem 0 0}
+.contribution{border-top:3px solid var(--accent);padding:.8rem 0}
+.contribution h3{font-size:1rem;font-weight:700;color:#111827;margin:0 0 .4rem}
+.contribution p{font-size:.9rem;line-height:1.5;margin:0;color:#4b5563}
+@media(max-width:760px){.contributions{grid-template-columns:1fr;gap:.4rem}}
 .stat{border:1px solid var(--line);border-radius:10px;padding:.8rem;background:#fff;text-align:center}
 .stat b{display:block;font-size:1.9rem;color:var(--accent);line-height:1.1}
 .stat span{font-size:.85rem;color:var(--muted)}
