@@ -1,6 +1,7 @@
 *.mp4
 *.webm
 *.mov
+*.mkv
 *.csv
 *.zip
 *.npy

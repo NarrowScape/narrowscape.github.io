@@ -12,7 +12,7 @@ from urllib.parse import urlsplit, unquote
 
 
 ROOT = Path(__file__).resolve().parents[1]
-BLOCKED = {".mp4", ".mov", ".webm", ".avi", ".csv", ".pkl", ".npy", ".npz", ".zip", ".xosc", ".xml", ".log"}
+BLOCKED = {".mp4", ".mov", ".webm", ".avi", ".mkv", ".csv", ".pkl", ".npy", ".npz", ".zip", ".xosc", ".xml", ".log"}
 REMOVED_FIGURES = {"flow_anatomy", "flow_bottleneck"}
 REMOVED_PREVIEWS = {
     "local-concerns-gpt.gif", "local-concerns-qwen7b.gif", "local-concerns-deepseek.gif",
