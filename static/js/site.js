@@ -23,7 +23,7 @@ function tabs(group, id){document.querySelectorAll('[data-group="'+group+'"]').f
 (function(){
   var OUT = {'collision':'#d03b3b','near-collision':'#ec835a','normal':'#0ca30c'};
   var FAMC = {'PED-TURNBACK':'#2a78d6','PED-OCCLUDED':'#eb6834','CUT-IN':'#1baf7a','BRAKE-CHAIN':'#eda100','NARROW-CONFLICT':'#e87ba4','STAGED-ACCIDENT':'#7c3aed'};
-  var MAPN = {'Sai_Kung':'Sai Kung','Tuen_Mun':'Tuen Mun','HKPC':'HKPC'};
+  var MAPN = {'Sai_Kung':'Sai Kung','Tuen_Mun':'Tuen Mun','KOT':'Kowloon Tong'};
   var D = null, st = {map:'Sai_Kung', colour:'outcome', pick:null, cell:null}, vb = null;
   function el(id){return document.getElementById(id);}
   function e(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
@@ -52,7 +52,7 @@ function tabs(group, id){document.querySelectorAll('[data-group="'+group+'"]').f
   function famName(k){var f = D.families.find(function(x){return x.key===k;}); return f ? f.name : k;}
   function card(){
     var c = D.cases.find(function(x){return x.no===st.pick;});
-    if (!c){ el('rv-card').innerHTML = '<p>Click a case on the map, or a count in the table below.</p><p class="ci">'+D.cases.length+' cases of the earlier trial set on the three surveyed maps (Sai Kung, Tuen Mun, HKPC): six scenario families, each case placed where its critical moment happens.</p>'; return; }
+    if (!c){ el('rv-card').innerHTML = '<p>Click a case on the map, or a count in the table below.</p><p class="ci">'+D.cases.length+' cases of the earlier trial set on the three surveyed maps (Sai Kung, Tuen Mun, Kowloon Tong): six scenario families, each case placed where its critical moment happens.</p>'; return; }
     var num = function(v, u){return (v===null||v===undefined||v==='None') ? '-' : (Math.round(v*100)/100)+(u||'');};
     el('rv-card').innerHTML = (c.thumb ? '<img src="'+c.thumb+'" alt="" draggable="false">' : '') +
       '<h4>'+e(c.no+' | '+c.title)+'</h4><div><span class="pill">'+e(famName(c.family))+'</span><span class="pill">'+e(MAPN[c.map]+' '+c.corridor)+'</span></div>' +

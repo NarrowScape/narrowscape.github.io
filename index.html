@@ -14,10 +14,10 @@
 <link rel="stylesheet" href="static/css/bulma.min.css">
 <link rel="stylesheet" href="static/css/index.css">
 <link rel="stylesheet" href="static/css/fontawesome.all.min.css">
-<link rel="stylesheet" href="static/css/site.css?v=202611021759">
+<link rel="stylesheet" href="static/css/site.css?v=20261108kot">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script defer src="static/js/fontawesome.all.min.js"></script>
-<script src="static/js/site.js?v=202611021759"></script>
+<script src="static/js/site.js?v=20261108kot"></script>
 </head>
 <body>
 <main id="main-content">
@@ -55,7 +55,7 @@
 <section class="section hero is-light" id="review"><div class="container is-max-desktop"><h2 class="title is-3">Case review: the 148-case trial set</h2><div class="content">
 <p>Click a case for its picture, outcome and description; scroll to zoom, drag to move.</p>
 <div class="rv">
-<div class="rv-bar"><div><label>Map <select id="rv-mapsel"><option value="Sai_Kung">Sai Kung</option><option value="Tuen_Mun">Tuen Mun</option><option value="HKPC">HKPC</option></select></label>
+<div class="rv-bar"><div><label>Map <select id="rv-mapsel"><option value="Sai_Kung">Sai Kung</option><option value="Tuen_Mun">Tuen Mun</option><option value="KOT">Kowloon Tong</option></select></label>
 &nbsp; <label>Colour by <select id="rv-colour"><option value="outcome">human-like driver's outcome</option><option value="ads">cautious ADS's outcome</option><option value="family">scenario family</option></select></label></div>
 <button class="button is-small" id="rv-fit">fit map</button></div>
 <div class="rv-main"><svg id="rv-map" role="img" aria-label="cases on the map"><g id="rv-roads"></g><g id="rv-paths"></g><g id="rv-marks"></g></svg>
@@ -70,7 +70,7 @@
 </div></div></section>
 
 <section class="section hero is-light" id="records"><div class="container is-max-desktop"><h2 class="title is-3">Grounded in Hong Kong's crash records</h2><div class="content">
-<p>District aggregates from the Transport Department's injury-collision records, 2014-2019, inform scenario priors and validation. Explore the <a href="https://streetreset-hktrafficcollisions.share.connect.posit.cloud/" target="_blank">Hong Kong traffic collision database</a>.</p>
+<p>District aggregates from the Transport Department's injury-collision records, 2014-2019, inform scenario priors and validation. Explore the <a href="https://github.com/Hong-Kong-Districts-Info/hkdatasets" target="_blank">public Hong Kong collision data</a>.</p>
 <div class="table-wrap"><table class="data"><thead><tr><th>Measure (generated vs KSI records)</th><th>Crash-informed generation</th><th>Without the crash prior</th><th>Transferred scenario design reference</th></tr></thead><tbody>
 <tr><td>Pedestrian conflicts</td><td>49% (records 42%)</td><td>29% (42%)</td><td>23% (50%)</td></tr>
 <tr><td>Walking along the road, of pedestrian conflicts</td><td>36% (43%)</td><td>0% (43%)</td><td>11% (46%)</td></tr>

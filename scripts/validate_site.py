@@ -144,6 +144,9 @@ def validate():
             assert not re.search(r"sk-or-v1-|gh[pousr]_[A-Za-z0-9]{20}", s), "Credential-like content in site"
     d = json.loads((ROOT / "static/data/review.json").read_text(encoding="utf-8"))
     assert "bundle" not in d, "Internal run metadata is not public content"
+    assert set(d["maps"]) == {"Sai_Kung", "Tuen_Mun", "KOT"}, "Public map naming changed"
+    assert sum(c["map"] == "KOT" for c in d["cases"]) == 49, "Kowloon Tong case count changed"
+    assert all(c["corridor"].startswith("KOT-") for c in d["cases"] if c["map"] == "KOT"), "Kowloon Tong corridor naming changed"
     for c in d["cases"]:
         assert not {"ego_path", "partner_path", "trajectory", "trajectories", "source", "run"}.intersection(c), "Recorded paths in public case metadata"
     print(f"PASS: {p.images} images, {len(files)} public files; local links resolve; original replays/videos and credentials excluded.")
